@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <contextName>soc-analyse-service</contextName>
+
+    <property name="root.logger.level" value="INFO"/>
+    <property name="log.path" value="/export/Logs" />
+    <property name="app.name" value="zy-demo-parent" />
+
+
+    <property name="log.file" value="${log.path}/${app.name}.log"/>
+    <property name="log.rollingFile" value="${log.path}/${app.name}.%d{yyyyMMdd}.%i.log.gz"/>
+
+    <!-- 彩色日志配置 -->
+    <!-- 彩色日志依赖的渲染类 -->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+    <!--自定义颜色配置类-->
+    <conversionRule conversionWord="customcolor" converterClass="zy.code.demo.parent.conf.LogbackColorful"/>
+    <!-- 彩色日志格式 -->
+    <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){green} %clr([${PID:-}]){magenta} %clr([%25.25t]){yellow} %customcolor([${LOG_LEVEL_PATTERN:-%5p ]}) %clr(%-40.40logger{39}){blue} %clr(:){cyan} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}" />
+
+
+
+
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!--时间戳|类名方法名|日志级别|UUID|手机号|MAC地址|[请求/响应标识]|日志详细内容-->
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${log.file}</File>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <ImmediateFlush>true</ImmediateFlush>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} | %logger{10} | %5p | %msg%n</pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log.rollingFile}</FileNamePattern>
+            <MaxHistory>60</MaxHistory>
+
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+
+
+    <appender name="asyncFileAppender" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>5000</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <includeCallerData>false</includeCallerData>
+        <appender-ref ref="fileAppender"/>
+    </appender>
+
+
+
+    <logger name="demo-boot-service" value="INFO"  additivity="false" >
+        <appender-ref ref="fileAppender"/>
+    </logger>
+
+
+
+    <root level="${root.logger.level}">
+        <appender-ref ref="asyncFileAppender"/>
+        <appender-ref ref="console"/>
+    </root>
+</configuration>
