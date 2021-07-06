@@ -1,0 +1,44 @@
+spring:
+  aop:
+    auto: true
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    filters: stat,wall,log4j
+    initialSize: 5
+    maxActive: 20
+    maxPoolPreparedStatementPerConnectionSize: 20
+    maxWait: 60000
+    minEvictableIdleTimeMillis: 300000
+    minIdle: 5
+    poolPreparedStatements: true
+    testOnBorrow: false
+    testOnReturn: false
+    testWhileIdle: true
+    timeBetweenEvictionRunsMillis: 60000
+    type: com.alibaba.druid.pool.DruidDataSource
+    validationQuery: SELECT 1 FROM DUAL
+    url: jdbc:mysql://localhost:3306/zhaoyang183?useSSL=false&useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&useOldAliasMetadataBehavior=true&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  mail:
+    port: 25
+    username: ${mail.username}
+    password: ${mail.password}
+    protocol: smtp
+    default-encoding: utf-8
+    host: smtp.qq.com
+    properties:
+      smtp:
+        socketFactory:
+          class: javax.net.ssl.SSLSocketFactory
+      mail:
+        debug: true
+
+
+# ----------------- mybatis ------------------------
+mybatis:
+  config-location: classpath:mybatis-config.xml
+  mapper-locations: classpath:zy/code/demo/dao/*.xml
